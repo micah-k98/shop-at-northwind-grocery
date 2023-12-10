@@ -2,11 +2,12 @@
 
 let selectSearchType, selectProduct, selectCategory;
 let productsContainer, productContainerTemplate;
-let allDataService;
+let categories, allDataService, filterDataService;
 
 document.addEventListener("DOMContentLoaded", () => {
 
     allDataService = new AllDataService();
+    filterDataService = new FilterDataService();
 
     // Set variables
     selectSearchType = document.getElementById("selectSearchType");
@@ -17,11 +18,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Register Events
     selectSearchType.addEventListener("change", filterSearchType);
+    selectProduct.addEventListener("change", filterProduct);
 
     // Call functions
     addProductList();
     addCategories();
-    filterSearchType();
 })
 
 async function addProductList() {
@@ -34,7 +35,7 @@ async function addProductList() {
 }
 
 async function addCategories() {
-    let categories = await allDataService.categoriesData();
+    categories = await allDataService.categoriesData();
 
     categories.forEach(category => {
         let option = new Option(category.name, category.id);
@@ -46,6 +47,7 @@ function filterSearchType() {
     if (selectSearchType.value == "productSearch") {
         selectProduct.hidden = false;
         selectCategory.hidden = true;
+        filterProduct();
     }
     else if (selectSearchType.value == "categorySearch") {
         selectProduct.hidden = true;
@@ -54,7 +56,18 @@ function filterSearchType() {
     else {
         selectProduct.hidden = true;
         selectCategory.hidden = true;
-        viewAll();
+        productsContainer.innerText = "";
+        if (selectSearchType.value == "all") viewAll();
+    }
+}
+
+async function filterProduct() {
+    productsContainer.innerText = "";
+    
+    if (selectProduct.value != "0") {
+        let selectedProductId = selectProduct.value;
+        let product = await filterDataService.product(selectedProductId); 
+        displayProducts(product);
     }
 }
 
@@ -62,20 +75,19 @@ async function viewAll() {
     productsContainer.innerText = "";
 
     let products = await allDataService.productsData();
-    let catergories = await allDataService.categoriesData();
-    let productCategory;
-
+    
     products.forEach(product => {
-        
-        catergories.forEach(category => {
-            if (category.id == product.categoryId) productCategory = category.name;
-        })
-
-        displayProducts(product, productCategory);
+        displayProducts(product);
     })
 }
 
-function displayProducts(product, productCategory) {
+function displayProducts(product) {
+    let productCategory;
+
+    categories.forEach(category => {
+        if (category.id == product.categoryId) productCategory = category.name;
+    })
+
     let card = productContainerTemplate.content.cloneNode(true);
 
     card.getElementById("productName").innerText = product.productName;
