@@ -1,0 +1,10 @@
+#selectSearchType {
+    width: 50%;
+    margin: auto;
+}
+
+#selectProduct,
+#selectCategory {
+    width: 75%;
+    margin: auto;
+}
