@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Register Events
     selectSearchType.addEventListener("change", filterSearchType);
     selectProduct.addEventListener("change", filterProduct);
+    selectCategory.addEventListener("change", filterCategory);
 
     // Call functions
     addProductList();
@@ -52,6 +53,7 @@ function filterSearchType() {
     else if (selectSearchType.value == "categorySearch") {
         selectProduct.hidden = true;
         selectCategory.hidden = false;
+        filterCategory();
     }
     else {
         selectProduct.hidden = true;
@@ -68,6 +70,19 @@ async function filterProduct() {
         let selectedProductId = selectProduct.value;
         let product = await filterDataService.product(selectedProductId); 
         displayProducts(product);
+    }
+}
+
+async function filterCategory() {
+    productsContainer.innerText = "";
+    
+    if (selectCategory.value != "0") {
+        let selectedCategoryId = selectCategory.value;
+        let products = await filterDataService.category(selectedCategoryId); 
+        
+        products.forEach(product => {
+            displayProducts(product);
+        })
     }
 }
 

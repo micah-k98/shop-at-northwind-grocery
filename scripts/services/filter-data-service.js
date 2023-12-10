@@ -8,4 +8,11 @@ class FilterDataService {
 
         return body;
     }
+
+    async category(selectedCategoryId) {
+        let response = await fetch(`${this.baseUrl}products?categoryId=${selectedCategoryId}`);
+        let body = await response.json();
+
+        return body;
+    }
 }
