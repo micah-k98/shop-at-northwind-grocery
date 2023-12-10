@@ -15,9 +15,13 @@ document.addEventListener("DOMContentLoaded", () => {
     productsContainer = document.getElementById("productsContainer");
     productContainerTemplate = document.getElementById("productContainerTemplate");
 
+    // Register Events
+    selectSearchType.addEventListener("change", filterSearchType);
+
     // Call functions
     addProductList();
     addCategories();
+    filterSearchType();
 })
 
 async function addProductList() {
@@ -36,4 +40,47 @@ async function addCategories() {
         let option = new Option(category.name, category.id);
         selectCategory.appendChild(option);
     });
+}
+
+function filterSearchType() {
+    if (selectSearchType.value == "productSearch") {
+        selectProduct.hidden = false;
+        selectCategory.hidden = true;
+    }
+    else if (selectSearchType.value == "categorySearch") {
+        selectProduct.hidden = true;
+        selectCategory.hidden = false;
+    }
+    else {
+        selectProduct.hidden = true;
+        selectCategory.hidden = true;
+        viewAll();
+    }
+}
+
+async function viewAll() {
+    productsContainer.innerText = "";
+
+    let products = await allDataService.productsData();
+    let catergories = await allDataService.categoriesData();
+    let productCategory;
+
+    products.forEach(product => {
+        
+        catergories.forEach(category => {
+            if (category.id == product.categoryId) productCategory = category.name;
+        })
+
+        displayProducts(product, productCategory);
+    })
+}
+
+function displayProducts(product, productCategory) {
+    let card = productContainerTemplate.content.cloneNode(true);
+
+    card.getElementById("productName").innerText = product.productName;
+    card.getElementById("productCategory").innerText = productCategory;
+    card.getElementById("productPrice").innerText = product.unitPrice;
+     
+    productsContainer.appendChild(card);
 }
