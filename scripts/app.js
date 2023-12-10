@@ -48,16 +48,20 @@ function filterSearchType() {
     if (selectSearchType.value == "productSearch") {
         selectProduct.hidden = false;
         selectCategory.hidden = true;
+        selectCategory.value = "0";
         filterProduct();
     }
     else if (selectSearchType.value == "categorySearch") {
         selectProduct.hidden = true;
+        selectProduct.value = "0";
         selectCategory.hidden = false;
         filterCategory();
     }
     else {
         selectProduct.hidden = true;
+        selectProduct.value = "0";
         selectCategory.hidden = true;
+        selectCategory.value = "0";
         productsContainer.innerText = "";
         if (selectSearchType.value == "all") viewAll();
     }
@@ -108,6 +112,7 @@ function displayProducts(product) {
     card.getElementById("productName").innerText = product.productName;
     card.getElementById("productCategory").innerText = productCategory;
     card.getElementById("productPrice").innerText = product.unitPrice;
+    card.getElementById("productLink").href = `http://localhost:3000/products?id=${product.id}`;
      
     productsContainer.appendChild(card);
 }
