@@ -112,7 +112,7 @@ function displayProducts(product) {
     card.getElementById("productName").innerText = product.productName;
     card.getElementById("productCategory").innerText = productCategory;
     card.getElementById("productPrice").innerText = product.unitPrice;
-    card.getElementById("productLink").href = `http://localhost:3000/products?id=${product.id}`;
+    card.getElementById("productLink").href = `details.html?id=${product.id}`;
      
     productsContainer.appendChild(card);
 }
